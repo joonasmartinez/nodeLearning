@@ -30,6 +30,18 @@ module.exports = (app)=>{
     
     route.post((req, res)=>{
 
+        req.assert('name', 'O nome é obrigatório.').notEmpty();
+        req.assert('email', 'O email é inválido.').notEmpty().isEmail();
+
+        let errors = req.validationErrors();
+
+        if(errors){
+
+            app.utils.error.send(err, req, res);
+            return false;
+
+        }
+
         db.insert(req.body, (err, user)=>{
             if(err){
                 app.utils.error.send(err, req, res);
